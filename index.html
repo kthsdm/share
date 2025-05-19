@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My File & URL Sharing Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+        }
+        h1 {
+            text-align: center;
+            color: #60cdff;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #60cdff;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .files-container {
+            height: 500px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #notes {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        #saveButton {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            float: right;
+        }
+        #saveButton:hover {
+            background-color: #0086ef;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+        }
+        p {
+            color: #aaa;
+        }
+        ::placeholder {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>My File & URL Sharing Hub</h1>
+    
+    <div class="container">
+        <h2>Shared Files</h2>
+        <p>Click any file to download it. No login required.</p>
+        <div class="files-container">
+            <!-- REPLACE WITH YOUR ONEDRIVE FOLDER EMBED URL -->
+            <iframe src="https://studentglendale-my.sharepoint.com/personal/mgriffi779_student_glendale_edu/_layouts/15/embed.aspx?folder=Guest_Access" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Quick Notes & URLs</h2>
+        <p>Paste your links or notes here for quick access.</p>
+        <textarea id="notes" placeholder="Paste your links or notes here..."></textarea>
+        <button id="saveButton">Save Notes</button>
+        <div style="clear:both"></div>
+    </div>
+    
+    <div class="footer">
+        Created with GitHub Pages & OneDrive
+    </div>
+    
+    <script>
+        // Load saved notes when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedNotes = localStorage.getItem('quickNotes');
+            if (savedNotes) {
+                document.getElementById('notes').value = savedNotes;
+            }
+            
+            // Save notes when button is clicked
+            document.getElementById('saveButton').addEventListener('click', function() {
+                var notes = document.getElementById('notes').value;
+                localStorage.setItem('quickNotes', notes);
+                alert('Notes saved! They will persist on this browser.');
+            });
+        });
+    </script>
+</body>
+</html>
