@@ -31,11 +31,25 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        .files-container {
-            height: 500px;
-            border: 1px solid #444;
-            border-radius: 4px;
-            overflow: hidden;
+        .files-button {
+            background-color: #0078d4;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 6px;
+            font-size: 20px;
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .files-button:hover {
+            background-color: #0086ef;
+        }
+        .files-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
         }
         #notes {
             width: 100%;
@@ -61,6 +75,12 @@
         #saveButton:hover {
             background-color: #0086ef;
         }
+        .status {
+            color: #60cdff;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -80,39 +100,75 @@
     
     <div class="container">
         <h2>Shared Files</h2>
-        <p>Click any file to download it. No login required.</p>
-        <div class="files-container">
-            <!-- REPLACE WITH YOUR ONEDRIVE FOLDER EMBED URL -->
-            <iframe src="https://studentglendale-my.sharepoint.com/personal/mgriffi779_student_glendale_edu/_layouts/15/embed.aspx?folder=Guest_Access" width="100%" height="100%" frameborder="0"></iframe>
-        </div>
+        <p>Click the button below to access your files. No login required.</p>
+        <a href="https://studentglendale-my.sharepoint.com/personal/mgriffi779_student_glendale_edu/Documents/Guest_Access" target="_blank" class="files-button">
+            <span class="files-icon">📁</span>
+            Open Shared Files
+        </a>
     </div>
     
     <div class="container">
         <h2>Quick Notes & URLs</h2>
-        <p>Paste your links or notes here for quick access.</p>
+        <p>Paste your links or notes here for quick access. Notes appear on all devices!</p>
         <textarea id="notes" placeholder="Paste your links or notes here..."></textarea>
+        <div id="status" class="status">Notes saved!</div>
         <button id="saveButton">Save Notes</button>
         <div style="clear:both"></div>
     </div>
     
     <div class="footer">
-        Created with GitHub Pages & OneDrive
+        Created with GitHub Pages & OneDrive - DR KARTHIK SUNDRAM
     </div>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <script>
-        // Load saved notes when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            var savedNotes = localStorage.getItem('quickNotes');
-            if (savedNotes) {
-                document.getElementById('notes').value = savedNotes;
-            }
+        // REPLACE THIS WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZgEdMOVXYsaXwTn1LhuacE5R9AgxF5gA",
+            authDomain: "share-8fd47.firebaseapp.com",
+            databaseURL: "https://share-8fd47-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "share-8fd47",
+            storageBucket: "share-8fd47.firebasestorage.app",
+            messagingSenderId: "21642991565",
+            appId: "1:21642991565:web:a7af64dee836a4b0b3d684"
+            measurementId: "G-EHDQ78S0ER"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Reference to your notes data
+        const notesRef = firebase.database().ref('sharedNotes');
+        
+        // Load notes when page opens
+        notesRef.on('value', (snapshot) => {
+            document.getElementById('notes').value = snapshot.val() || '';
+        });
+        
+        // Save notes when button clicked
+        document.getElementById('saveButton').addEventListener('click', function() {
+            const notes = document.getElementById('notes').value;
+            notesRef.set(notes);
             
-            // Save notes when button is clicked
-            document.getElementById('saveButton').addEventListener('click', function() {
-                var notes = document.getElementById('notes').value;
-                localStorage.setItem('quickNotes', notes);
-                alert('Notes saved! They will persist on this browser.');
-            });
+            // Show saved status
+            const status = document.getElementById('status');
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 2000);
+        });
+        
+        // Auto-save when user stops typing
+        let typingTimer;
+        document.getElementById('notes').addEventListener('keyup', function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function() {
+                const notes = document.getElementById('notes').value;
+                notesRef.set(notes);
+            }, 1500);
         });
     </script>
 </body>
